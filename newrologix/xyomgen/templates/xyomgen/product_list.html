@@ -1,0 +1,120 @@
+<!-- html = "<table border=1><tr>"
+    for key in keys:
+        html += "<th>{}</th>".format(key)
+    html += "</tr>"
+    print(keys)
+    for record in js:
+        html += "<tr>"
+        for key in keys:
+            val = record.get(key, "")
+            if key == 'productImage':
+                html += "<td><img height=200 src='{}'></img></td>".format(val)
+            else:
+                html += "<td>{}</td>".format(val)
+        html += "</tr>"
+    html += "</html>"
+    headers = ['productName', 'brand', 'descriptionShort',
+           'productImage', 'categories', 'quantity', 'count',
+           'countUnit', 'weight', 'weightUnit', 'defaultDosing', 'flavor',
+           'wholesalePrice', 'retailPrice',
+           'releaseDate', 'upc', 'sku', 'medPaxSku', 'medPaxDetails',
+           'supplementalFactsHTML', 'descriptionFull', 'warnings']
+    -->
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<div class="product_list">
+    {% if search_criteria %}
+    <p>
+        <b>Filters: </b>
+        {% for k,v in search_criteria.items %}
+        {{ k }} --&gt; {{ v }} |
+        {% endfor %}
+    </p>
+    {% endif %}
+    <table class="styled-table">
+        <thead style="position:sticky;inset-block-start: 0;">
+        <tr>
+            <th>Product Name</th><th>Brand</th>
+            <th>Short Description</th><th>Product Image</th>
+            <th>Categories</th><th>Quantity</th><th>Count</th>
+            <th>Unit Count</th><th>Weight</th><th>Unit Weight</th>
+            <th>Default Dosing</th><th>Flavor</th>
+            <th>Wholesale Price</th><th>Retail Price</th>
+            <th>Release Date</th><th>UPC</th><th>SKU</th>
+            <th>Med Pax SKU</th><th>Med Pax Details</th>
+            <th>Supplemental Facts</th>
+            <th class="full">Full Description</th><th>Warnings</th>
+        </tr>
+        </thead>
+        {% for record in data %}
+        <tr>
+        {% for k,v in record.items %}
+            {% if k == 'productImage' %}
+            <td><a href="{{ v }}" target="_blank" ><img src="{{ v }}" height="50" /></a></td>
+            {% elif  k == 'productName' %}
+                <td style="font-size:20px">
+                    <b>{{ v }}</b>
+                </td>
+            {% elif  k == 'warnings' %}
+                <td>
+                    {% if v %}
+                    {% for line in v %}
+                    {{ line }}<br />
+                    {% endfor %}
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
+            {% elif  k == 'releaseDate' %}
+            <td>
+                {{ v |slice:"0:10"}}
+            </td>
+            {% elif  k == 'defaultDosing' %}
+            <td>
+                {% for line in v %}
+                {% for kk, vv in line.items %}
+                {{ kk }}:{{ vv }}<br />
+                {% endfor %}
+                {% endfor %}
+            </td>
+            {% elif  k == 'medPaxDetails' %}
+            <td>
+                {% if v %}
+                {% for kk, vv in v.items %}
+                {{ kk }}:{{ vv }}<br />
+                {% endfor %}
+                {% else %}
+                &nbsp;
+                {% endif %}
+            </td>
+            {% else %}
+            <td>{{ v | safe }}</td>
+            {% endif %}
+        {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+<script>
+    // When the user scrolls the page, execute myFunction
+window.onscroll = function() {myFunction()};
+
+// Get the header
+var header = document.getElementById("table_header");
+
+// Get the offset position of the navbar
+var sticky = header.offsetTop;
+
+// Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+function myFunction() {
+  if (window.pageYOffset > sticky) {
+    header.classList.add("sticky");
+  } else {
+    header.classList.remove("sticky");
+  }
+}
+</script>
+{% endblock %}
