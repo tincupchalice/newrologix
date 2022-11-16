@@ -1,0 +1,42 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>newrologix</title>
+    <link rel="icon"
+      type="image/ico"
+      href="{% static 'img/favicon.ico' %}">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+    </script>
+    <script src="{% static 'js/newrologix.js' %}"></script>
+</head>
+<body>
+    <div class="top_section">
+    <div id="nav" class="topnav">
+      <a class="active" href="/xyomgen/">Home</a>
+      <a href="/xyomgen/get_product_list/">Products</a>
+      <a href="/xyomgen/create_order/">Create Order</a>
+      <a href="/xyomgen/get_orders/">View Orders</a>
+      <a href="/xyomgen/get_order">Order Lookup</a>
+      <a href="/xyomgen/cancel_order/">Cancel Order</a>
+    </div>
+    <div class="logo">
+        <img width=200 src="{% static 'img/logo.png' %}" />
+    </div>
+    <div style="min-height:50px;margin-top:38px">
+      <form target=_blank method="GET" action="/xyomgen/get_product_list/">
+        {% csrf_token %}
+        <label for="product_search">Product/Category:</label>
+        <input type="text" name="product_search" id="product_search">
+        <label for="instockonly">In Stock Only:</label>
+        <input type="checkbox" name="instockonly" id=instockonly">
+        <input type="submit" value="Search">
+      </form>
+    </div>
+    </div>
+{% block content %}{% endblock %}
+</body>
+</html>
