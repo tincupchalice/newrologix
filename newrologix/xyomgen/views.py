@@ -1,9 +1,12 @@
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from django import template
 from requests.auth import HTTPBasicAuth
 import requests, json
 from collections import OrderedDict
+from django.shortcuts import render, redirect
+from .models import Product
+from django.contrib.auth.decorators import login_required
+from cart.cart import Cart
 
 # Create your views here.
 api_username = '10290408'
@@ -25,7 +28,7 @@ url_headers = {'Username': api_username, 'Password': api_password}
 'productImage', 'descriptionFull', 'brand'}
 """
 headers = ['productName', 'brand', 'descriptionShort',
-           'productImage', 'categories', 'quantity', 'count',
+           'productImage', 'drs', 'categories', 'quantity', 'count',
            'countUnit', 'weight', 'weightUnit', 'defaultDosing', 'flavor',
            'wholesalePrice', 'retailPrice',
            'releaseDate', 'upc', 'sku', 'medPaxSku', 'medPaxDetails',
@@ -55,7 +58,7 @@ def get_api_call(api_call, data={}):
 
 def post_api_call(api_call, data={}):
     if data:
-        ret = requests.post(api_call, headers=url_headers, data=data)
+        ret = requests.post(api_call, headers=url_headers, params=data)
     else:
         ret = requests.post(api_call, headers=url_headers)
 
@@ -93,13 +96,77 @@ def get_product_list(request):
     else:
         js = get_api_call(api_product_list_url)
     data = []
-    for record in js:
+    for i, record in enumerate(js):
         elt = OrderedDict()
         for header in headers:
-            if header == 'releaseDate':
-                print(record[header], type(record[header]))
+            if i < 5: print(header, record.get(header, "N/A"), type(record.get(header, "N/A")))
             elt[header] = record.get(header, "")
         data.append(elt)
     context['data'] = data
     template = loader.get_template('xyomgen/product_list.html')
     return HttpResponse(template.render(context, request))
+
+
+def create_order(request):
+    # form to create order
+    context = {}
+    template = loader.get_template('xyomgen/create_order.html')
+    return HttpResponse(template.render(context, request))
+
+
+def order_created(request):
+    post = request.POST
+    if post:
+        # add form values
+        pass
+    else:
+        # revert to form with partial values
+        pass
+    context = {}
+    template = loader.get_template('xyomgen/order_accepted.html')
+    return HttpResponse(template.render(context, request))
+
+
+### THIS IS FOR CLIENT SIDE LATER
+@login_required(login_url="/users/login")
+def cart_add(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.add(product=product)
+    return redirect("home")
+
+
+@login_required(login_url="/users/login")
+def item_clear(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.remove(product)
+    return redirect("cart_detail")
+
+
+@login_required(login_url="/users/login")
+def item_increment(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.add(product=product)
+    return redirect("cart_detail")
+
+
+@login_required(login_url="/users/login")
+def item_decrement(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.decrement(product=product)
+    return redirect("cart_detail")
+
+
+@login_required(login_url="/users/login")
+def cart_clear(request):
+    cart = Cart(request)
+    cart.clear()
+    return redirect("cart_detail")
+
+
+@login_required(login_url="/users/login")
+def cart_detail(request):
+    return render(request, 'cart/cart_detail.html')

@@ -38,7 +38,7 @@
         <tr>
             <th>Product Name</th><th>Brand</th>
             <th>Short Description</th><th>Product Image</th>
-            <th>Categories</th><th>Quantity</th><th>Count</th>
+            <th>DRS</th><th>Categories</th><th>Quantity</th><th>Count</th>
             <th>Unit Count</th><th>Weight</th><th>Unit Weight</th>
             <th>Default Dosing</th><th>Flavor</th>
             <th>Wholesale Price</th><th>Retail Price</th>
@@ -53,6 +53,12 @@
         {% for k,v in record.items %}
             {% if k == 'productImage' %}
             <td><a href="{{ v }}" target="_blank" ><img src="{{ v }}" height="50" /></a></td>
+            {% elif k == 'drs' %}
+                {% if v %}
+                <td><a href="{{ v }}" target="_blank" >{{ v }}</a></td>
+                {% else %}
+                <td>&nbsp;</td>
+                {% endif %}
             {% elif  k == 'productName' %}
                 <td style="font-size:20px">
                     <b>{{ v }}</b>
