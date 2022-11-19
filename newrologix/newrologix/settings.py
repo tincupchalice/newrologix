@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-4ep=4wv0$94yzf*7tjid_ayk@t+ag6javoptlv0(td(79z+(z5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '10.103.68.140']
 
 
 # Application definition
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'xyomgen',
+    'xymogen',
+    'ws_client',
     'cart',
 ]
 
