@@ -7,7 +7,7 @@ class Product(models.Model):
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='xyomgen/')
+    image = models.ImageField(upload_to='Xymogen/')
     price = models.FloatField()
 
 
@@ -18,6 +18,9 @@ class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=255, default="N/A")
 
+    class Meta:
+        unique_together = ('category_name',)
+
 
 class Brand(models.Model):
     def __str__(self):
@@ -25,6 +28,9 @@ class Brand(models.Model):
 
     brand_id = models.AutoField(primary_key=True)
     brand_name = models.CharField(max_length=255, default="N/A")
+
+    class Meta:
+        unique_together = ('brand_name',)
 
 
 class UnitCount(models.Model):
@@ -34,6 +40,9 @@ class UnitCount(models.Model):
     unit_count_id = models.AutoField(primary_key=True)
     unit_count_name = models.CharField(max_length=255, default="N/A")
 
+    class Meta:
+        unique_together = ('unit_count_name',)
+
 
 class Flavor(models.Model):
     def __str__(self):
@@ -42,15 +51,23 @@ class Flavor(models.Model):
     flavor_id = models.AutoField(primary_key=True)
     flavor_name = models.CharField(max_length=255, default="N/A")
 
+    class Meta:
+        unique_together = ('flavor_name',)
 
-class XyomgenProduct(models.Model):
+
+class XymogenProduct(models.Model):
     def __str__(self):
-        return ""
+        return "{}|{}|{}|{}|{}|{}|".fomrat(self.productName,
+                    self.brand, self.descriptionShort,
+                    self.wholesalePrice, self.retailPrice,
+                    self.releaseDate)
 
     product_id = models.AutoField(primary_key=True)
     productName = models.CharField(max_length=255)
     brand = models.ForeignKey(Brand, related_name='xproduct_brand', on_delete=models.CASCADE)
     descriptionShort = models.CharField(max_length=255)
+    descriptionFull = models.CharField(max_length=1023)
+    supplementFactsHTML = models.CharField(max_length=255, blank=True, null=True)
     productImage = models.CharField(max_length=255)
     quantity = models.IntegerField()
     count = models.CharField(max_length=255)
@@ -61,6 +78,7 @@ class XyomgenProduct(models.Model):
     wholesalePrice = models.FloatField()
     retailPrice = models.FloatField()
     releaseDate = models.CharField(max_length=255)
+    drs = models.CharField(max_length=255, blank=True, null=True)
     upc = models.CharField(max_length=255, default="N/A")
     sku = models.CharField(max_length=255, default="N/A")
     warnings = models.CharField(max_length=255, default="N/A")
@@ -71,7 +89,18 @@ class XProductCategoryMap(models.Model):
         return ""
 
     map_id = models.AutoField(primary_key=True)
-    product = models.ForeignKey(XyomgenProduct, related_name='prodcatmap_product', on_delete=models.CASCADE)
+    product = models.ForeignKey(XymogenProduct, related_name='productmap_product', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='productmap_category', on_delete=models.CASCADE)
+
+
+class XProductDefaultDosingMap(models.Model):
+    def __str__(self):
+        return ""
+
+    map_id = models.AutoField(primary_key=True)
+    product = models.ForeignKey(XymogenProduct, related_name='dosingmap_product', on_delete=models.CASCADE)
+    #dose = models.ForeignKey(, related_name='dosingmap_product', on_delete=models.CASCADE)
+
 """
 'productName', 'brand', 'descriptionShort',
            'productImage', 'categories', 'quantity', 'count',
