@@ -9,32 +9,79 @@
       href="{% static 'img/favicon.ico' %}">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <!-- reference to your installed Font Awesome Free package's files here -->
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
     <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
     </script>
     <script src="{% static 'js/newrologix.js' %}"></script>
 </head>
 <body>
+    <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-color">
+        <div class="container">
+            <!-- Navbar Left Side -->
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/">Home</a>
+            </div>
+            <button aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler ml-auto float-right btncolor" data-target="#navbarToggle" data-toggle="collapse" type="button">
+                <i class="fas fa-bars fa-2x"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <!-- Navbar Left Side -->
+                <div class="navbar-nav">
+                    <a target=_blank class="nav-item nav-link" href="xymogen/get_product_list/">Products</a>
+                </div>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="xymogen/create_order/">Create Order</a>
+                </div>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/xymogen/order_status/">Order Status</a>
+                </div>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="xymogen/cancel_order/">Cancel Order</a>
+                </div>
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="/">About</a>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" href="/accounts/logout/">
+                        Log out <i class="fas fa-sign-in-alt"></i>
+                    </a>
+                    {% else %}
+                    <a class="nav-item nav-link" href="/accounts/login/">
+                        Log in <i class="fas fa-sign-in-alt"></i>
+                    </a>
+                    <a class="nav-item nav-link" href="/accounts/signup/">
+                        Sign up <i class="fas fa-user-plus"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    </header>
     <div class="top_section">
-    <div id="nav" class="topnav">
-      <a class="active" href="/xyomgen/">Home</a>
-      <a href="/xyomgen/get_product_list/">Products</a>
-      <a href="/xyomgen/create_order/">Create Order</a>
-      <a href="/xyomgen/get_orders/">View Orders</a>
-      <a href="/xyomgen/get_order">Order Lookup</a>
-      <a href="/xyomgen/cancel_order/">Cancel Order</a>
-    </div>
-    <div class="logo">
-        <img width=200 src="{% static 'img/logo.png' %}" />
-    </div>
-    <div style="min-height:50px;margin-top:38px">
-      <form target=_blank method="GET" action="/xyomgen/get_product_list/">
-        {% csrf_token %}
-        <label for="product_search">Product/Category:</label>
-        <input type="text" name="product_search" id="product_search">
-        <label for="instockonly">In Stock Only:</label>
-        <input type="checkbox" name="instockonly" id=instockonly">
-        <input type="submit" value="Search">
-      </form>
+    <div>
+        <div class="logo">
+            <form target=_blank method="GET" action="/xyomgen/get_product_list/">
+                {% csrf_token %}
+                <label for="product_search">Search Product/Category:</label>
+                <input type="text" name="product_search" id="product_search">
+                <label for="instockonly">In Stock Only:</label>
+                <input type="checkbox" name="instockonly" id=instockonly">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+        <img class="img-right" width=200 src="{% static 'img/logo.png' %}" />
     </div>
     </div>
 {% block content %}{% endblock %}

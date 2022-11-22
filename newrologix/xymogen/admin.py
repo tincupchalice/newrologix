@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import XymogenProduct, Category, Brand, UnitCount, Flavor
+from .models import XymogenProduct, Category, Brand, UnitCount, Flavor, XProductDefaultDosingMap, XProductCategoryMap
 # Register your models here.
 
 
@@ -30,3 +30,11 @@ class FlavorAdmin(admin.ModelAdmin):
     list_display = ('flavor_name',)
 
 
+@admin.register(XProductDefaultDosingMap)
+class XProductDefaultDosingMapAdmin(admin.ModelAdmin):
+    list_display = ('product', 'time', 'qty',)
+
+
+@admin.register(XProductCategoryMap)
+class XProductCategoryMapAdmin(admin.ModelAdmin):
+    list_display = ('product', 'category')

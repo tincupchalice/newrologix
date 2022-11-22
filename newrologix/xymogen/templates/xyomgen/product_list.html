@@ -1,25 +1,3 @@
-<!-- html = "<table border=1><tr>"
-    for key in keys:
-        html += "<th>{}</th>".format(key)
-    html += "</tr>"
-    print(keys)
-    for record in js:
-        html += "<tr>"
-        for key in keys:
-            val = record.get(key, "")
-            if key == 'productImage':
-                html += "<td><img height=200 src='{}'></img></td>".format(val)
-            else:
-                html += "<td>{}</td>".format(val)
-        html += "</tr>"
-    html += "</html>"
-    headers = ['productName', 'brand', 'descriptionShort',
-           'productImage', 'categories', 'quantity', 'count',
-           'countUnit', 'weight', 'weightUnit', 'defaultDosing', 'flavor',
-           'wholesalePrice', 'retailPrice',
-           'releaseDate', 'upc', 'sku', 'medPaxSku', 'medPaxDetails',
-           'supplementalFactsHTML', 'descriptionFull', 'warnings']
-    -->
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
