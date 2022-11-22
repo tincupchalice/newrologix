@@ -1,4 +1,4 @@
-from ...models import XymogenProduct, Flavor, UnitCount, Brand, Category, XProductCategoryMap
+from ...models import XymogenProduct, Flavor, UnitCount, Brand, Category, XProductCategoryMap, XProductDefaultDosingMap
 from django.core.management.base import BaseCommand
 from requests.auth import HTTPBasicAuth
 import requests, json
@@ -60,7 +60,114 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         js = get_product_list()
         for record in js:
-            categories = []
-            brands = []
-            unit_counts = []
-            flavors = []
+            cat = record['categories']
+            newcats = []
+            newcat = Category()
+            if cat:
+                cats = cat.split(",")
+                for c in cats:
+                    categories = Category.objects.filter(category_name=c)
+                    if not categories.count():
+                        newcat.category_name = c
+                        try:
+                            newcat.clean()
+                            newcat.save()
+                            newcats.append(newcat)
+                        except Exception as e:
+                            print(str(e))
+                    else:
+                        newcats.append(categories[0])
+            brand = record['brand']
+            if not brand: brand = "N/A"
+            b = Brand()
+            if brand:
+                brands = Brand.objects.filter(brand_name=brand)
+                if not brands.count():
+                    b.brand_name = brand
+                    try:
+                        b.clean()
+                        b.save()
+                    except Exception as e:
+                        print(str(e))
+                else:
+                    b = brands[0]
+            unit_count = record['countUnit']
+            if not unit_count: unit_count = "N/A"
+            ucount = UnitCount()
+            if unit_count:
+                unit_counts = UnitCount.objects.filter(unit_count_name=unit_count)
+                if not unit_counts.count():
+                    ucount.unit_count_name = unit_count
+                    try:
+                        ucount.clean()
+                        ucount.save()
+                    except Exception as e:
+                        print(str(e))
+                else:
+                    ucount = unit_counts[0]
+            flavor = record['flavor']
+            if not flavor: flavor = "N/A"
+            f = Flavor()
+            if flavor:
+                flavors = Flavor.objects.filter(flavor_name=flavor)
+                if not flavors.count():
+                    f.flavor_name = flavor
+                    try:
+                        f.clean()
+                        f.save()
+                    except Exception as e:
+                        print(str(e))
+                else:
+                    f = flavors[0]
+            products = XymogenProduct.objects.filter(productName=record['productName']).filter(upc=record['upc'])
+            if not products.count():
+                product = XymogenProduct()
+                product.productName = record['productName']
+                product.sku = record['sku']
+                product.quantity = record['quantity']
+                product.releaseDate = record['releaseDate']
+                product.wholesalePrice = record['wholesalePrice']
+                product.retailPrice = record['retailPrice']
+                product.upc = record['upc']
+                product.flavor = f
+                product.brand = b
+                product.descriptionShort = record['descriptionShort']
+                product.supplementFactsHTML = record.get('supplementalFactsHTML', "N/A")
+                product.drs = record['drs']
+                product.unitCount = ucount
+                product.unitWeight = record['weightUnit']
+                product.weight = record['weight']
+                product.productImage = record['productImage']
+                try:
+                    product.clean()
+                    product.save()
+                except Exception as e:
+                    print(record['productName'], "Product:"+str(e))
+
+                for newcat in newcats:
+                    category_map = XProductCategoryMap()
+                    category_map.product = product
+                    category_map.category = newcat
+                    try:
+                        category_map.clean()
+                        category_map.save()
+                    except Exception as e:
+                        print("CategoryMap"+str(e))
+
+                dosings = record['defaultDosing']
+                for dosing in dosings:
+                    time = dosing['time']
+                    qty = dosing['qty']
+                    dose_map = XProductDefaultDosingMap()
+                    dose_map.product = product
+                    dose_map.time = time
+                    dose_map.qty = qty
+                    try:
+                        dose_map.clean()
+                        dose_map.save()
+                    except Exception as e:
+                        print("DoseMap"+str(e))
+
+
+
+

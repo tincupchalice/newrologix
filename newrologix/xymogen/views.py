@@ -8,6 +8,7 @@ from .models import Product
 from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
 
+
 # Create your views here.
 api_username = '10290408'
 api_password = 'hM6cO3jH9eM2pF4p'
@@ -75,6 +76,7 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+@login_required(login_url='/accounts/login/')
 def get_product_list(request):
     extra_data = None
     if request.GET:
@@ -107,6 +109,7 @@ def get_product_list(request):
     return HttpResponse(template.render(context, request))
 
 
+@login_required(login_url='/accounts/login/')
 def create_order(request):
     # form to create order
     context = {}
@@ -114,6 +117,7 @@ def create_order(request):
     return HttpResponse(template.render(context, request))
 
 
+@login_required(login_url='/accounts/login/')
 def order_created(request):
     post = request.POST
     if post:
@@ -127,46 +131,60 @@ def order_created(request):
     return HttpResponse(template.render(context, request))
 
 
+@login_required(login_url='/accounts/login/')
+def order_status(request):
+    pass
+
+
+@login_required(login_url='/accounts/login/')
+def cancel_order(request):
+    pass
+
+
+@login_required(login_url='/accounts/login/')
+def order_canceled(request):
+    pass
+
 ### THIS IS FOR CLIENT SIDE LATER
-@login_required(login_url="/users/login")
-def cart_add(request, id):
-    cart = Cart(request)
-    product = Product.objects.get(id=id)
-    cart.add(product=product)
-    return redirect("home")
-
-
-@login_required(login_url="/users/login")
-def item_clear(request, id):
-    cart = Cart(request)
-    product = Product.objects.get(id=id)
-    cart.remove(product)
-    return redirect("cart_detail")
-
-
-@login_required(login_url="/users/login")
-def item_increment(request, id):
-    cart = Cart(request)
-    product = Product.objects.get(id=id)
-    cart.add(product=product)
-    return redirect("cart_detail")
-
-
-@login_required(login_url="/users/login")
-def item_decrement(request, id):
-    cart = Cart(request)
-    product = Product.objects.get(id=id)
-    cart.decrement(product=product)
-    return redirect("cart_detail")
-
-
-@login_required(login_url="/users/login")
-def cart_clear(request):
-    cart = Cart(request)
-    cart.clear()
-    return redirect("cart_detail")
-
-
-@login_required(login_url="/users/login")
-def cart_detail(request):
-    return render(request, 'cart/cart_detail.html')
+# @login_required(login_url="/users/login")
+# def cart_add(request, id):
+#     cart = Cart(request)
+#     product = Product.objects.get(id=id)
+#     cart.add(product=product)
+#     return redirect("home")
+#
+#
+# @login_required(login_url="/users/login")
+# def item_clear(request, id):
+#     cart = Cart(request)
+#     product = Product.objects.get(id=id)
+#     cart.remove(product)
+#     return redirect("cart_detail")
+#
+#
+# @login_required(login_url="/users/login")
+# def item_increment(request, id):
+#     cart = Cart(request)
+#     product = Product.objects.get(id=id)
+#     cart.add(product=product)
+#     return redirect("cart_detail")
+#
+#
+# @login_required(login_url="/users/login")
+# def item_decrement(request, id):
+#     cart = Cart(request)
+#     product = Product.objects.get(id=id)
+#     cart.decrement(product=product)
+#     return redirect("cart_detail")
+#
+#
+# @login_required(login_url="/users/login")
+# def cart_clear(request):
+#     cart = Cart(request)
+#     cart.clear()
+#     return redirect("cart_detail")
+#
+#
+# @login_required(login_url="/users/login")
+# def cart_detail(request):
+#     return render(request, 'cart/cart_detail.html')
