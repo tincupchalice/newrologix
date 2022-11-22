@@ -20,6 +20,7 @@ class Category(models.Model):
 
     class Meta:
         unique_together = ('category_name',)
+        verbose_name_plural = 'Categories'
 
 
 class Brand(models.Model):
@@ -57,7 +58,7 @@ class Flavor(models.Model):
 
 class XymogenProduct(models.Model):
     def __str__(self):
-        return "{}|{}|{}|{}|{}|{}|".fomrat(self.productName,
+        return "{}|{}|{}|{}|{}|{}|".format(self.productName,
                     self.brand, self.descriptionShort,
                     self.wholesalePrice, self.retailPrice,
                     self.releaseDate)
@@ -82,11 +83,13 @@ class XymogenProduct(models.Model):
     upc = models.CharField(max_length=255, default="N/A")
     sku = models.CharField(max_length=255, default="N/A")
     warnings = models.CharField(max_length=255, default="N/A")
+    supplementFactsHTML = models.CharField(max_length=255, default="N/A")
+    disabled = models.IntegerField(default=0)
 
 
 class XProductCategoryMap(models.Model):
     def __str__(self):
-        return ""
+        return "{}|{}|".format(self.product, self.category)
 
     map_id = models.AutoField(primary_key=True)
     product = models.ForeignKey(XymogenProduct, related_name='productmap_product', on_delete=models.CASCADE)
@@ -95,11 +98,13 @@ class XProductCategoryMap(models.Model):
 
 class XProductDefaultDosingMap(models.Model):
     def __str__(self):
-        return ""
+        return "{}|{}|{}|".format(self.product,
+                self.time, self.qty)
 
     map_id = models.AutoField(primary_key=True)
     product = models.ForeignKey(XymogenProduct, related_name='dosingmap_product', on_delete=models.CASCADE)
-    #dose = models.ForeignKey(, related_name='dosingmap_product', on_delete=models.CASCADE)
+    time = models.CharField(max_length=255, default="Daily")
+    qty = models.IntegerField(default=1)
 
 """
 'productName', 'brand', 'descriptionShort',
