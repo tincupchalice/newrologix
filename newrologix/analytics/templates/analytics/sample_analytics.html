@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+    <h2>Brain Map</h2>
+    <div><h4 style="display:inline">Client Name:</h4> {{ client_name }}</div>
+    <div><h4 style="display:inline">Client Number:</h4> {{ client_number }}</div>
+    <div><h4 style="display:inline">Map Date:</h4> {{ map_date }}</div>
+    <div><h4><u>Suggested Supplements</u></h4></div>
+    {%  for sup in supplements %}
+        <div>{{ sup }}</div>
+    {%  endfor %}
+    <!--
+    {% for page in pages %}
+        <div class="home_content">{{ page }}</div>
+    {% endfor %}
+    -->
+{% endblock %}
